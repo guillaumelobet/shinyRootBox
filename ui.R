@@ -7,39 +7,49 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel(h1("- CRootBox -")),
+  titlePanel("CRootBox"),
   
   # Sidebar with a Simulations outputs
   sidebarLayout(
     sidebarPanel(
       
-      helpText("Guillaume Lobet ... ."),
+      helpText("This app display the capabilities of the CRootBox model."),
+      
+      helpText("Daniel Leitner, Guillaume Lobet, Andrea Schnepf"),
+      
+      helpText("Forschungszentrum Juelich GmbH"),
       
       tags$hr(),      
       
-      actionButton(inputId = "runROOTBOX", label="Unleash CRootBox"),
+      # h4("Select root system type"),
+      selectInput("dataset", label = "Select root system dataset", choices = c("Please load datafile")), # updated with the datafile
+      actionButton(inputId = "runROOTBOX", label="Unleash CRootBox", icon("rocket")),
+      
       tags$hr(),   
       
-      selectInput("dataset", label = "Select dataset", choices = c("Please load datafile")), # updated with the datafile
-      
+      # h4("Update root parameters"),
+      selectInput("roottype", label = "Select root type", choices = c("Please load datafile")), # updated with the datafile
+      selectInput("parameter", label = "Select parameter to change", choices = c("Please load datafile")), # updated with the datafile
+      sliderInput("value", "Parameter value:", min=10, max=20, value=10),
+     
       tags$hr(),   
       
+      # h4("Update plant parameters"),
+      selectInput("parameter2", label = "Select plant parameter to change", choices = c("Please load datafile")), # updated with the datafile
+      sliderInput("value2", "Parameter value:", min=10, max=20, value=10),
       
-      sliderInput("time_in_sim", "Time in simulation:", min=10, max=20, value=10),
-      
-      sliderInput("P_nbMaxPrim", "Number of primary:", min=1, max=10, value=2, step = 1),
-      
-      sliderInput("P_distRamif", "Interbranch distance:", min=0.2, max=2, value=1.5, step=0.1),
-      
-      sliderInput("P_coeffCroissRad", "Radial growth:", min=0, max=0.4, value=0, step=0.05),
-      
-      sliderInput("P_maxLatAge", "Lateral max age:", min=5, max=20, value=5, step=1),
-      
-      sliderInput("P_penteVitDiam", "Slope growth/diam:", min=20, max=60, value=20, step=2),
+       
+      actionButton(inputId = "updateParams", label="Update root system", icon("refresh")),
+      downloadButton("downloadParams", ""),
       
       # Run the simulations
+      tags$hr(), 
+      strong(htmlOutput("paramTitle")),
+      htmlOutput("paramText"),
       
-      tags$hr()
+      tags$hr(), 
+      strong(htmlOutput("plantTitle")),
+      htmlOutput("plantText")
       
     ),
     
@@ -50,7 +60,8 @@ shinyUI(fluidPage(
                  fluidRow(
                    column(5,
                           h6("Root system representation"),
-                          plotOutput("rootPlot")
+                          plotOutput("rootPlot"),
+                          downloadButton("downloadRSML", "RSML file")
                           ),
                    column(5,
                           h6("Density plot"),

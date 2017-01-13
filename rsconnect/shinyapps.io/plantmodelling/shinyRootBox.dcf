@@ -1,0 +1,11 @@
+name: shinyRootBox
+title: shinyRootBox
+account: plantmodelling
+server: shinyapps.io
+appId: 150822
+bundleId: 678072
+url: https://plantmodelling.shinyapps.io/shinyRootBox/
+when: 1484290427.75846
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: www/.DS_Store
