@@ -10,7 +10,10 @@ shinyServer(
       fileName <- 'www/litterature.txt'
       litt <- read.table(fileName, sep="\t", stringsAsFactors = F, header = T)
       rs$litt <- litt
-      updateSelectInput(session, "dataset", choices = litt$name)  
+      fileName <- 'www/modelparameter'
+      flist <- unique(gsub(".pparam", "", gsub(".rparam", "", list.files(fileName))))
+      fl <- litt$name[litt$id %in% flist]
+      updateSelectInput(session, "dataset", choices = fl)  
       
     })  
 
@@ -259,6 +262,9 @@ shinyServer(
               str <- paste("tropism", temp[i+2, 4], temp[i, 4], temp[i+1, 4], sep="\t")
               text <- paste(text, str, sep="\n")
             }else if(temp[i, 3] == "sigma_tropism" | temp[i, 3] == "tropism"){
+            }else if(temp[i, 3] == "dx"){
+              str <- paste(temp[i, 3], temp[i, 4], sep="\t")
+              text <- paste(text, str, sep="\n")
             }else{
               str <- paste(temp[i, 3], temp[i, 4], temp[i, 5], temp[i, 6], sep="\t")
               text <- paste(text, str, sep="\n")
@@ -284,11 +290,7 @@ shinyServer(
         text <- gsub("\tNA", "", text)
 
         cat(text, file="www/param.pparam")
-        
-        
-        
-        
-        
+
         # setwd("www/")
         system("www/a.out")  
         rootsystem <- fread("www/rootsystem.txt", header = T)
@@ -319,7 +321,7 @@ shinyServer(
       # mydata <- rootsystem
       
       plot <- plot + 
-        geom_segment(data = mydata, aes(x = x1, y = z1, xend = x2, yend = z2, colour=factor(type)), alpha=0.9) + 
+        geom_segment(data = mydata, aes(x = x1, y = z1, xend = x2, yend = z2, colour=factor(type)), alpha=0.9, size=1.2) + 
         coord_fixed() +
         ylab("Depth (cm)") 
       
@@ -453,13 +455,22 @@ shinyServer(
         # mydata <- rootsystem
         
         plot <- ggplot() +  theme_classic() + 
-          geom_segment(data = mydata, aes(x = x1, y = z1, xend = x2, yend = z2, colour=factor(type)), alpha=0.9) + 
+          geom_segment(data = mydata, aes(x = x1, y = z1, xend = x2, yend = z2, colour=factor(type)), alpha=0.9) +
+          # geom_segment(data = mydata, aes(x = x1, y = z1, xend = x2, yend = z2)) + 
           coord_fixed() +
-          ylab("Depth (cm)") 
+          # theme(axis.line = element_blank(), 
+          #       axis.text.x = element_blank(),
+          #       axis.text.y = element_blank(),
+          #       axis.ticks = element_blank(),
+          #       axis.title.x = element_blank(),
+          #       panel.background = element_rect(fill = "transparent",colour = NA), # or theme_blank()
+          #       plot.background = element_rect(fill = "transparent",colour = NA))+
+          ylab("Depth (cm)")
+        # ylab("") 
         
         if(input$bwfig) plot <- plot + scale_colour_grey()
         
-        plot + ggsave(file, height = 10, width = 10)
+        plot + ggsave(file, height = 10, width = 10, bg="transparent")
       }
     )      
         
@@ -484,7 +495,7 @@ shinyServer(
       # the argument 'file'.
       content = function(file) {
         
-        rsml <- read_file("www/rootsystem.txt")
+        rsml <- read_file("www/rootsystem.rsml")
         cat(rsml, file=file)
         
       }
@@ -538,7 +549,7 @@ shinyServer(
       # the argument 'file'.
       content = function(file) {
         
-        rsml <- read_file("www/rootsystem.txt")
+        rsml <- read_file("www/rootsystem.vtp")
         cat(rsml, file=file)
         
       }
@@ -556,7 +567,21 @@ shinyServer(
       temp[3,] <- c("Maximal depth", round(-min(mydata$z1)), "[cm]")
       
       temp
-    })     
+    })  
+    
+    
+    output$table_results_1 <- renderTable({
+      if (is.null(rs$rootsystem)) { return()}
+      mydata <- rs$rootsystem
+      mydata$length = sqrt((mydata$x1-mydata$x2)^2 + (mydata$y1-mydata$y2)^2 + (mydata$z1-mydata$z2)^2 )
+      
+      temp <- data.frame("Metric" = character(), "Value"=numeric(),"Unit" = character(), stringsAsFactors = F)
+      temp[1,] <- c("Total root length", round(sum(mydata$length)), "[cm]")
+      temp[2,] <- c("Number of roots segments", length(mydata$length), "[-]")
+      temp[3,] <- c("Maximal depth", round(-min(mydata$z1)), "[cm]")
+      
+      temp
+    })      
     
     
     

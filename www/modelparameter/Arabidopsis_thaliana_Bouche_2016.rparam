@@ -1,0 +1,34 @@
+# Parameter set for type
+type	1
+name	type_1
+lb	0.313	0.246
+la	3.005	0.903
+ln	0.198	0.087
+lmax	44.416	4.399
+r	0.494	0.049
+a	0.068	0.007
+color	0.431373	0.392157	0.196078
+tropism	1	4	0.34
+dx	0.2
+successors	1	2
+successorP	1	1
+theta	0	0
+rlt	1e+09	0
+gf	1
+# Parameter set for type
+type	2
+name	type_2
+lb	3.829	0.383
+la	3.829	0.383
+ln	0	0
+lmax	7.658	2.62
+r	0.085	0.029
+a	0.063	0.013
+color	0.431373	0.392157	0.196078
+tropism	1	4	0.34
+dx	0.2
+successors	0	0
+successorP	0	1
+theta	35.298	22.267
+rlt	1e+09	0
+gf	1

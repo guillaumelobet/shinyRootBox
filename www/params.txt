@@ -6,7 +6,7 @@ r	Initial growth rate [cm day-1]	text
 a	Root radius [cm]	text
 n_tropism	Tropism parameter 1	Root tropism parameter (number of trials)
 sigma_tropism	Tropism parameter 2	Root tropism parameter (mean value of expected changeg) [1/cm]
-dx	Maximal segment size [cm]	text
+dx	Maximal segment size [cm]	Size of the root segments used for the simulation [cm]
 theta	Insertion angle [rad]	Angle between root and parent root (rad)
 plantingdepth	Planting depth [cm]	The depth, in cm, at which the seed is placed in the soil
 firstB	firstB	Emergence of first basal root [day]
